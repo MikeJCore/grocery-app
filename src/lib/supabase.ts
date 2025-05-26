@@ -14,13 +14,20 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    flowType: 'pkce',
   },
   global: {
     headers: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
       'apikey': supabaseAnonKey,
-      'Authorization': `Bearer ${supabaseAnonKey}`
-    }
-  }
+      'Authorization': `Bearer ${supabaseAnonKey}`,
+    },
+  },
+});
+
+// Add a global error handler
+supabase.auth.onAuthStateChange((event, session) => {
+  console.log('Auth event:', event, session);
 });
