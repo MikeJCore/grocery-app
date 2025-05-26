@@ -17,12 +17,15 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
     flowType: 'pkce',
   },
+  db: {
+    schema: 'public',
+  },
   global: {
     headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      'Accept': 'application/vnd.pgrst.object+json',
       'apikey': supabaseAnonKey,
       'Authorization': `Bearer ${supabaseAnonKey}`,
+      'Content-Profile': 'public',
     },
   },
 });
