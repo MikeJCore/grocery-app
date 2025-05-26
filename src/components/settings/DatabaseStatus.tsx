@@ -10,7 +10,7 @@ const DatabaseStatus: React.FC = () => {
     const checkConnection = async () => {
       try {
         // Try to fetch a simple query to check connection
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('categories')
           .select('count')
           .limit(1);
@@ -78,11 +78,16 @@ const DatabaseStatus: React.FC = () => {
             <p className="text-emerald-700">
               Your app is successfully connected to the Supabase database. All data will be stored and synchronized.
             </p>
+            <div className="mt-4">
+              <p className="text-sm text-gray-600">
+                <span className="font-medium">Status:</span> {status === 'connected' ? 'Connected' : status === 'error' ? 'Error' : 'Checking...'}
+              </p>
+            </div>
           </div>
         )}
         
         <div className="text-sm text-gray-500">
-          <p>Database URL: {supabase.supabaseUrl}</p>
+          <p>Database connection status: {status}</p>
         </div>
       </div>
     </div>

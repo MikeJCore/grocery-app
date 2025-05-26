@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Settings, User, Tag } from 'lucide-react';
+import { Settings, User } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useCategoryStore } from '../store/categoryStore';
 import InvitePartner from '../components/settings/InvitePartner';

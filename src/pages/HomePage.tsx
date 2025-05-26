@@ -7,7 +7,7 @@ import EditListNameForm from '../components/grocery/EditListNameForm';
 import { GroceryList } from '../types';
 
 const HomePage: React.FC = () => {
-  const { lists, fetchLists, createList, createYesterdaysList, isLoading } = useListStore();
+  const { lists, fetchLists, createList, isLoading } = useListStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [showEditListNameForm, setShowEditListNameForm] = useState(false);
   const [listToEdit, setListToEdit] = useState<GroceryList | null>(null);

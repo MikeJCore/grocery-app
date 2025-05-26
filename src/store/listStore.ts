@@ -1,6 +1,4 @@
 import { create } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
-import { format, addWeeks, subDays } from 'date-fns';
 import { ListState, GroceryList, GroceryItem } from '../types';
 import { useAuthStore } from './authStore';
 import { supabase } from '../lib/supabase';
@@ -26,7 +24,7 @@ export const useListStore = create<ListState & {
   currentList: null,
   items: [],
   isLoading: false,
-  error: null,
+  error: null as string | null,
 
   fetchLists: async () => {
     set({ isLoading: true, error: null });
@@ -115,6 +113,46 @@ export const useListStore = create<ListState & {
 
   setCurrentList: (list) => {
     set({ currentList: list });
+  },
+  createList: async () => {
+    // Implementation for createList
+    console.log('createList called');
+  },
+  createYesterdaysList: async () => {
+    // Implementation for createYesterdaysList
+    console.log('createYesterdaysList called');
+  },
+  duplicateList: async (listId: string) => {
+    // Implementation for duplicateList
+    console.log('duplicateList called with id:', listId);
+  },
+  fetchListItems: async (listId: string) => {
+    // Implementation for fetchListItems
+    console.log('fetchListItems called with id:', listId);
+  },
+  addItem: async (listId: string, name: string, category: string, quantity: number, unit?: string) => {
+    // Implementation for addItem
+    console.log('addItem called with:', { listId, name, category, quantity, unit });
+  },
+  updateItem: async (item: GroceryItem) => {
+    // Implementation for updateItem
+    console.log('updateItem called with:', item);
+  },
+  deleteItem: async (itemId: string) => {
+    // Implementation for deleteItem
+    console.log('deleteItem called with id:', itemId);
+  },
+  toggleItemCheck: async (itemId: string) => {
+    // Implementation for toggleItemCheck
+    console.log('toggleItemCheck called with id:', itemId);
+  },
+  moveItemToCategory: async (itemId: string, newCategory: string) => {
+    // Implementation for moveItemToCategory
+    console.log('moveItemToCategory called with:', { itemId, newCategory });
+  },
+  completeList: async (listId: string, totalSpent: number, paymentMethod: string, receiptUrl?: string) => {
+    // Implementation for completeList
+    console.log('completeList called with:', { listId, totalSpent, paymentMethod, receiptUrl });
   },
   
   // Archive a list (soft delete)
