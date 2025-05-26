@@ -1,7 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { ShoppingCart, Check, Calendar } from '@expo/vector-icons/Feather';
 import { format, parseISO } from 'date-fns';
+import { ShoppingCart, Check, Calendar } from 'lucide-react';
 import { GroceryList } from '../types';
 
 interface GroceryListCardProps {
@@ -11,144 +9,45 @@ interface GroceryListCardProps {
 
 export default function GroceryListCard({ list, onPress }: GroceryListCardProps) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title} numberOfLines={1}>
+    <div className="bg-white rounded-lg shadow p-4 mb-4 cursor-pointer hover:shadow-md transition-shadow" onClick={onPress}>
+      <div className="flex flex-col">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-lg font-medium text-gray-900 truncate">
             {list.name}
-          </Text>
+          </h3>
           {list.is_completed ? (
-            <View style={styles.completedBadge}>
-              <Check size={12} color="#065F46" />
-              <Text style={styles.completedText}>Completed</Text>
-            </View>
+            <div className="flex items-center bg-green-50 text-green-800 text-xs px-2 py-1 rounded-md">
+              <Check className="h-3 w-3 mr-1" />
+              <span>Completed</span>
+            </div>
           ) : (
-            <View style={styles.activeBadge}>
-              <ShoppingCart size={12} color="#1E40AF" />
-              <Text style={styles.activeText}>Active</Text>
-            </View>
+            <div className="flex items-center bg-blue-50 text-blue-800 text-xs px-2 py-1 rounded-md">
+              <ShoppingCart className="h-3 w-3 mr-1" />
+              <span>Active</span>
+            </div>
           )}
-        </View>
+        </div>
 
-        <View style={styles.dateContainer}>
-          <Calendar size={14} color="#6B7280" />
-          <Text style={styles.dateText}>
-            Week of {format(parseISO(list.week_of), 'MMM d, yyyy')}
-          </Text>
-        </View>
+        <div className="flex items-center text-gray-500 text-sm mb-2">
+          <Calendar className="h-4 w-4 mr-1" />
+          <span>Week of {format(parseISO(list.week_of), 'MMM d, yyyy')}</span>
+        </div>
 
         {list.is_completed && list.total_spent && (
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Total: </Text>
-            <Text style={styles.totalAmount}>
+          <div className="flex items-center mt-1">
+            <span className="text-sm text-gray-600">Total: </span>
+            <span className="ml-1 font-medium">
               €{list.total_spent.toFixed(2)}
-            </Text>
-          </View>
+            </span>
+          </div>
         )}
-      </View>
+      </div>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
+      <div className="mt-2 pt-2 border-t border-gray-100">
+        <p className="text-sm text-gray-500">
           Created {format(parseISO(list.created_at), 'MMM d, yyyy')}
-        </Text>
-      </View>
-    </TouchableOpacity>
+        </p>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  content: {
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    flex: 1,
-    marginRight: 8,
-  },
-  completedBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#D1FAE5',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  completedText: {
-    fontSize: 12,
-    color: '#065F46',
-    marginLeft: 4,
-    fontWeight: '500',
-  },
-  activeBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#DBEAFE',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  activeText: {
-    fontSize: 12,
-    color: '#1E40AF',
-    marginLeft: 4,
-    fontWeight: '500',
-  },
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  dateText: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginLeft: 6,
-  },
-  totalContainer: {
-    marginTop: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  totalLabel: {
-    fontSize: 14,
-    color: '#374151',
-    fontWeight: '500',
-  },
-  totalAmount: {
-    fontSize: 14,
-    color: '#059669',
-    fontWeight: '600',
-  },
-  footer: {
-    backgroundColor: '#F9FAFB',
-    padding: 12,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#F3F4F6',
-  },
-  footerText: {
-    fontSize: 12,
-    color: '#6B7280',
-  },
-});

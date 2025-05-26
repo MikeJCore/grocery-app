@@ -1,13 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  FlatList,
-  RefreshControl,
-} from 'react-native';
-import { Plus } from '@expo/vector-icons/Feather';
+import { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
 import { useListStore } from '../store/listStore';
 import GroceryListCard from '../components/GroceryListCard';
 import SearchBar from '../components/SearchBar';
@@ -15,7 +7,6 @@ import SearchBar from '../components/SearchBar';
 export default function HomeScreen({ navigation }: any) {
   const { lists, fetchLists, createList, isLoading } = useListStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchLists();
@@ -30,140 +21,59 @@ export default function HomeScreen({ navigation }: any) {
   const activeLists = filteredLists.filter((list) => !list.is_completed);
   const completedLists = filteredLists.filter((list) => list.is_completed);
 
-  const onRefresh = React.useCallback(async () => {
-    setRefreshing(true);
-    await fetchLists();
-    setRefreshing(false);
-  }, [fetchLists]);
-
   const renderEmptyState = () => (
-    <View style={styles.emptyState}>
-      <Text style={styles.emptyStateTitle}>No grocery lists yet</Text>
-      <Text style={styles.emptyStateSubtitle}>
+    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+      <h2 className="text-xl font-semibold text-gray-900 mb-2">No grocery lists yet</h2>
+      <p className="text-gray-500 mb-6">
         Create your first grocery list to get started.
-      </Text>
-      <TouchableOpacity style={styles.createButton} onPress={() => createList()}>
-        <Plus size={20} color="white" />
-        <Text style={styles.createButtonText}>Create New List</Text>
-      </TouchableOpacity>
-    </View>
+      </p>
+      <button
+        onClick={() => createList()}
+        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        <Plus className="h-4 w-4 mr-2" />
+        Create New List
+      </button>
+    </div>
   );
 
-  const renderSection = ({
-    title,
-    data,
-  }: {
-    title: string;
-    data: typeof lists;
-  }) => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <GroceryListCard
-            list={item}
-            onPress={() => navigation.navigate('ListDetail', { listId: item.id })}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={false}
-      />
-    </View>
-  );
+  const renderSection = (title: string, data: any[], isLast = false) => {
+    if (data.length === 0) return null;
+
+    return (
+      <div className={`mb-8 ${isLast ? 'mb-0' : ''}`}>
+        <h2 className="text-lg font-medium text-gray-900 mb-3">{title}</h2>
+        <div className="space-y-3">
+          {data.map((item) => (
+            <GroceryListCard
+              key={item.id}
+              list={item}
+              onPress={() =>
+                navigation.navigate('ListDetail', { listId: item.id })
+              }
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  if (lists.length === 0 && !isLoading) {
+    return (
+      <div className="container mx-auto p-4 max-w-2xl">
+        <SearchBar onSearch={setSearchQuery} />
+        {renderEmptyState()}
+      </div>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.createButton}
-          onPress={() => createList()}
-          disabled={isLoading}
-        >
-          <Plus size={20} color="white" />
-          <Text style={styles.createButtonText}>New List</Text>
-        </TouchableOpacity>
-      </View>
-
+    <div className="container mx-auto p-4 max-w-2xl">
       <SearchBar onSearch={setSearchQuery} />
-
-      {filteredLists.length === 0 ? (
-        renderEmptyState()
-      ) : (
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          ListHeaderComponent={
-            <>
-              {activeLists.length > 0 &&
-                renderSection({ title: 'Active Lists', data: activeLists })}
-              {completedLists.length > 0 &&
-                renderSection({ title: 'Completed Lists', data: completedLists })}
-            </>
-          }
-          data={[]} // Empty data as we're using ListHeaderComponent
-          renderItem={null}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-    </View>
+      <div className="space-y-8 mt-4">
+        {renderSection('Active Lists', activeLists)}
+        {renderSection('Completed', completedLists, true)}
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F9FAFB',
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: 16,
-  },
-  createButton: {
-    backgroundColor: '#059669',
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 8,
-  },
-  createButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 12,
-  },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 32,
-    marginTop: 16,
-  },
-  emptyStateTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 8,
-  },
-  emptyStateSubtitle: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-});

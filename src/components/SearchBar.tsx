@@ -1,13 +1,12 @@
-import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
-import { Search, X } from '@expo/vector-icons/Feather';
+import { useState } from 'react';
+import { Search, X } from 'lucide-react';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
-  const [query, setQuery] = React.useState('');
+  const [query, setQuery] = useState('');
 
   const handleClear = () => {
     setQuery('');
@@ -15,51 +14,30 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   };
 
   return (
-    <View style={styles.container}>
-      <Search size={18} color="#9CA3AF" style={styles.searchIcon} />
-      <TextInput
-        style={styles.input}
+    <div className="relative">
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <Search className="h-4 w-4 text-gray-400" />
+      </div>
+      <input
+        type="text"
+        className="block w-full pl-10 pr-10 py-2 border border-gray-200 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
         value={query}
-        onChangeText={(text) => {
+        onChange={(e) => {
+          const text = e.target.value;
           setQuery(text);
           onSearch(text);
         }}
         placeholder="Search lists..."
-        placeholderTextColor="#9CA3AF"
       />
-      {query ? (
-        <X
-          size={18}
-          color="#9CA3AF"
-          style={styles.clearIcon}
-          onPress={handleClear}
-        />
-      ) : null}
-    </View>
+      {query && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+        >
+          <X className="h-4 w-4 text-gray-400 hover:text-gray-500" />
+        </button>
+      )}
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    height: 44,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: '#111827',
-  },
-  clearIcon: {
-    padding: 4,
-  },
-});
