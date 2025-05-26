@@ -55,7 +55,16 @@ export const useAuthStore = create<AuthState & {
       if (error) throw error;
       
       if (data.user) {
-        // Check if the user has a household by joining with household_members
+        const user = {
+          id: data.user.id,
+          email: data.user.email || '',
+          created_at: data.user.created_at || new Date().toISOString(),
+        } as User;
+        
+        // Set the user first
+        set({ user });
+        
+        // Then check if the user has a household
         const { data: householdMember, error: householdError } = await supabase
           .from('household_members')
           .select('household_id')
@@ -71,14 +80,6 @@ export const useAuthStore = create<AuthState & {
         if (!householdMember) {
           await get().createHousehold('My Household');
         }
-        
-        set({ 
-          user: {
-            id: data.user.id,
-            email: data.user.email || '',
-            created_at: data.user.created_at || new Date().toISOString(),
-          } as User
-        });
       }
     } catch (error) {
       console.error('Error in signIn:', error);
