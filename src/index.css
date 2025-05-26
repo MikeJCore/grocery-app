@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ensure dropdowns appear above other content */
+.relative {
+  position: relative;
+}
+
+/* Add a higher z-index for dropdown menus */
+.z-\[100\] {
+  z-index: 100 !important;
+}
+
+/* Modal overlay should have a very high z-index */
+.modal-overlay {
+  z-index: 1000 !important;
+}
+
+/* Modal content should be above the overlay */
+.modal-content {
+  z-index: 1001 !important;
+}
+
+/* Fix for dropdown menus */
+button[aria-haspopup="true"] + div {
+  position: absolute;
+  z-index: 200;
+}
+
+/* Ensure dropdown menus are always on top */
+.dropdown-menu {
+  position: absolute;
+  z-index: 9999 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
